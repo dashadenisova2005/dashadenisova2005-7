@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Галерея</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .gallery-container {
+            display: flex;
+            width: 800px; /* Ширина галереи */
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .gallery-container .gallery-slide {
+            width: 33.33%; /* Ширина одного слайда */
+            float: left; /* Позволяет элементам располагаться в строку */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-container .gallery-slide img {
+            width: 100%;
+            height: 250px; /* Высота изображения */
+            object-fit: cover;
+        }
+
+        /* Стили для стрелок */
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            cursor: pointer;
+        }
+
+        .gallery-nav.prev {
+            left: 10px;
+        }
+
+        .gallery-nav.next {
+            right: 10px;
+        }
+
+        .gallery-nav img {
+            width: 30px;
+            height: 30px;
+        }
+
+        /* Стили для пейджера */
+        .gallery-pager {
+            display: flex;
+            justify-content: center;
+        }
+
+        .gallery-pager .page {
+            padding: 5px 10px;
+            margin: 0 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .gallery-pager .page.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Изменения стилей для мобильных устройств */
+        @media (max-width: 600px) { 
+            .gallery-container {
+                width: 100%;
+            }
+
+            .gallery-container .gallery-slide {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gallery-container">
+        <div class="gallery-slide">
+            <img src="image/6.png" alt="Изображение 1">
+        </div>
+        <div class="gallery-slide">
+            <img src="image/7.png" alt="Изображение 2">
+        </div>
+        <div class="gallery-slide">
+            <img src="image/8.png" alt="Изображение 3">
+        </div>
+        <div class="gallery-slide">
+            <img src="image/9.png" alt="Изображение 4">
+        </div>
+        <div class="gallery-slide">
+            <img src="image/10.png" alt="Изображение 5">
+        </div>
+        <div class="gallery-slide">
+            <img src="image/11.png" alt="Изображение 6">
+        </div>
+        <div class="gallery-slide">
+            <img src="image/12.png" alt="Изображение 7">
+        </div>
+        <div class="gallery-slide">
+            <img src="image/13.png" alt="Изображение 8">
+        </div>
+        <div class="gallery-slide">
+            <img src="image/14.png" alt="Изображение 9">
+        </div>
+
+        <div class="gallery-nav prev">
+            <img src="image/5.png" alt="Стрелка влево">
+        </div>
+        <div class="gallery-nav next">
+            <img src="image/4.png" alt="Стрелка вправо">
+        </div>
+    </div>
+
+    <div class="gallery-pager"></div>
+
+    <script>
+        const galleryContainer = document.querySelector('.gallery-container');
+        const gallerySlides = document.querySelectorAll('.gallery-slide');
+        const galleryNavPrev = document.querySelector('.gallery-nav.prev');
+        const galleryNavNext = document.querySelector('.gallery-nav.next');
+        const galleryPager = document.querySelector('.gallery-pager');
+        const slidesPerPage = window.innerWidth >= 600 ? 3 : 1; // Число слайдов на странице
+
+        let currentPage = 1;
+
+        function createPager() {
+            const numPages = Math.ceil(gallerySlides.length / slidesPerPage);
+            galleryPager.innerHTML = '';
+            for (let i = 1; i <= numPages; i++) {
+                const pageElement = document.createElement('div');
+                pageElement.classList.add('page');
+                pageElement.textContent = i;
+                if (i === currentPage) {
+                    pageElement.classList.add('active');
+                }
+                pageElement.addEventListener('click', () => {
+                    goToPage(i);
+                });
+                galleryPager.appendChild(pageElement);
+            }
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            const startIndex = (page - 1) * slidesPerPage;
+            const endIndex = startIndex + slidesPerPage;
+            gallerySlides.forEach((slide, index) => {
+                if (index >= startIndex && index < endIndex) {
+                    slide.style.display = 'block';
+                } else {
+                    slide.style.display = 'none';
+                }
+            });
+            updatePager();
+        }
+
+        function updatePager() {
+            const pages = galleryPager.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            pages[currentPage - 1].classList.add('active');
+        }
+
+        function nextSlide() {
+            if (currentPage < Math.ceil(gallerySlides.length / slidesPerPage)) {
+                goToPage(currentPage + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentPage > 1) {
+                goToPage(currentPage - 1);
+            }
+        }
+
+        createPager();
+        goToPage(currentPage);
+
+        galleryNavNext.addEventListener('click', nextSlide);
+        galleryNavPrev.addEventListener('click', prevSlide);
+    </script>
+</body>
+</html>
